@@ -1,0 +1,22 @@
+version: '3.0'
+
+services:
+  db-truong:
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=truong_itt
+    ports:
+      - 5432:5432
+  data-extract-container:
+    image: apache/airflow:2.3.0-python3.8
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./data_local:/var/tmp/data-local
+    ports:
+      - 8080:8080
+    command: bash -c '(airflow db init && airflow users create --username admin --password admin --firstname truong --lastname truongdetrai --role Admin --email hoduytruong280220@gmail.com); airflow webserver & airflow scheduler'
+volumes:
+  dags:
+  data_local:
